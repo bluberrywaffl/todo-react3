@@ -16,6 +16,7 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
           체크박스의 상태가 변경되면 onToggle 함수를 호출하여 완료 상태를 업데이트합니다. */}
       <input type="checkbox" checked={todo.completed} onChange={onToggle} />
 
+
       {/* 할 일의 텍스트를 렌더링하고, 완료 상태에 따라 텍스트에 취소선을 적용합니다. */}
       <span
         className={styles.todoText}
