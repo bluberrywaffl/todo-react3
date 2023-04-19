@@ -8,16 +8,19 @@
 }
 
 input[type="text"].itemInput {
-  width: 100%;
-  padding: 5px;
-  margin-bottom: 10px;
+  width: 100% !important;
+  padding: 5px !important;
+  margin-bottom: 10px !important;
+  background-color: transparent !important;
+  color: white !important;
 }
+
 
 button.addButton {
   padding: 5px;
-  background-color: #0070f3;
+  background-color: #ffd3ea;
   color: white;
-  border: 1px solid #0070f3;
+  border: 1px solid #ffd3ea;
   border-radius: 5px;
   cursor: pointer;
 }
@@ -37,3 +40,5 @@ button.addButton:hover {
   margin-left: 10px;
   flex-grow: 1;
 }
+
+
