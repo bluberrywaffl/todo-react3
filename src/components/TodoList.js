@@ -6,6 +6,8 @@
 import React, { useState, useEffect } from "react";
 import TodoItem from "@/components/TodoItem";
 import styles from "@/styles/TodoList.module.css";
+import moment from "moment";
+
 
 //firebase 관련 모듈 불러오기
 import { db } from "@/firebase";
@@ -15,13 +17,14 @@ import {
   doc,
   getDocs,
   addDoc,
-  updateDoc,
+  updateDoc,          
   deleteDoc,
   orderBy,
 } from "firebase/firestore";
 
 //DB의 todo 컬렉션 참조 만들기. 컬렉션 사용시 잘못된 컬렉션 이름 사용 방지.
 const todoCollection = collection(db, "todos");
+
 
 // TodoList 컴포넌트를 정의합니다.
 const TodoList = () => {
@@ -31,13 +34,15 @@ const TodoList = () => {
 
   const getTodos = async () => {
     //Firestore 쿼리를 만든다.
-    const q = query(todoCollection);
+    const q = query(todoCollection, orderBy("date")); //todo를 날짜별로 나열
     // const q = query(collection(db, "todos"), where("user", "==", user.uid));
     // const q = query(todoCollection, orderBy("datetime", "desc"));
 
     //Firestore에서 할 일 목록 조회합니다.
     const results = await getDocs(q);
     const newTodos = [];
+
+    
 
     //가져온 할 일 목록을 newTodos 배열에 담음
     results.docs.forEach((doc) => {
@@ -64,14 +69,15 @@ const TodoList = () => {
     //   completed: 완료 여부,
     // }
     // ...todos => {id: 1, text: "할일1", completed: false}, {id: 2, text: "할일2", completed: false}}, ..
-    
+    const currentDate = new Date(); //현재 날짜와 시간을 가져옴
     //Firestore에 추가한 할일들 저장하기
     const docRef = await addDoc(todoCollection, {
       text: input,
       completed: false,
+      date: currentDate.getTime(), //타임스탬프로 생성 날짜를 저장
     });
     //id 값을 Firestore에 저장한 값으로 지정.
-    setTodos([...todos, { id: docRef.id, text: input, completed: false }]);
+    setTodos([...todos, { id: docRef.id, text: input, completed: false, date: currentDate.getTime() }]);
     setInput("");
   };
 
@@ -162,7 +168,7 @@ const TodoList = () => {
           style={{ boxShadow: '0 4px 5px rgba(0, 0, 0, 0.3)' }}
         >
           Add Todo
-        </button>
+        </button>   
       </div>
       {/* 할 일 목록을 렌더링합니다. */}
       <ul>
