@@ -10,7 +10,7 @@ import moment from "moment";
 
 // TodoItem 컴포넌트를 정의합니다.
 const TodoItem = ({ todo, onToggle, onDelete }) => {
-  const formattedDate = moment(todo.date).format("MMM DD, YYYY");
+  const formattedDate = moment(todo.datetime).format("MMM DD, YYYY, hh:mm:ss");
   // 각 할  일 항목을 렌더링합니다.
   return (
     <li className={styles.todoItem}>

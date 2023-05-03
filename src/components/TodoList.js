@@ -34,7 +34,7 @@ const TodoList = () => {
 
   const getTodos = async () => {
     //Firestore 쿼리를 만든다.
-    const q = query(todoCollection, orderBy("date")); //todo를 날짜별로 나열
+    const q = query(todoCollection, orderBy("datetime", "desc")); //todo를 날짜별로 나열
     // const q = query(collection(db, "todos"), where("user", "==", user.uid));
     // const q = query(todoCollection, orderBy("datetime", "desc"));
 
@@ -74,10 +74,10 @@ const TodoList = () => {
     const docRef = await addDoc(todoCollection, {
       text: input,
       completed: false,
-      date: currentDate.getTime(), //타임스탬프로 생성 날짜를 저장
+      datetime: currentDate.getTime(), //타임스탬프로 생성 날짜를 저장
     });
     //id 값을 Firestore에 저장한 값으로 지정.
-    setTodos([...todos, { id: docRef.id, text: input, completed: false, date: currentDate.getTime() }]);
+    setTodos([...todos, { id: docRef.id, text: input, completed: false, datetime: currentDate.getTime() }]);
     setInput("");
   };
 
