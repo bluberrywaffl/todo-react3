@@ -1,0 +1,18 @@
+import NextAuth from "next-auth";
+import KakoProvider from "next-auth/providers/kakao";
+
+export default NextAuth({
+    providers: [
+        KakoProvider({
+            clientId: process.env.KAKAO_CLIENT_ID,
+            clientSecret: process.env.KAKAO_CLIENT_SECRET,
+        }),
+    ],
+    callbacks: {
+        async session({session, token, user }) {
+            session.user.id = token.sub;
+            session.user.name = token.name;
+            return session;
+        },
+    },
+});

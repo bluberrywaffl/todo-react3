@@ -7,6 +7,7 @@ import React, { useState, useEffect } from "react";
 import TodoItem from "@/components/TodoItem";
 import styles from "@/styles/TodoList.module.css";
 import moment from "moment";
+import { useSession } from "next-auth/react";
 
 
 //firebase 관련 모듈 불러오기
@@ -20,6 +21,7 @@ import {
   updateDoc,          
   deleteDoc,
   orderBy,
+  where,
 } from "firebase/firestore";
 
 //DB의 todo 컬렉션 참조 만들기. 컬렉션 사용시 잘못된 컬렉션 이름 사용 방지.
@@ -32,9 +34,15 @@ const TodoList = () => {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
 
+  const { data } = useSession();
+
   const getTodos = async () => {
+    if (!data?.user?.name) return;
     //Firestore 쿼리를 만든다.
-    const q = query(todoCollection, orderBy("datetime", "desc")); //todo를 날짜별로 나열
+    const q = query(
+      todoCollection, 
+      where("userId", "==", data?.user?.id),
+      orderBy("datetime", "desc")); //todo를 날짜별로 나열
     // const q = query(collection(db, "todos"), where("user", "==", user.uid));
     // const q = query(todoCollection, orderBy("datetime", "desc"));
 
@@ -56,7 +64,7 @@ const TodoList = () => {
 
   useEffect(() => {
     getTodos();
-  }, []);
+  }, [data]);
 
   // addTodo 함수는 입력값을 이용하여 새로운 할 일을 목록에 추가하는 함수입니다.
   const addTodo = async () => {
@@ -72,6 +80,7 @@ const TodoList = () => {
     const currentDate = new Date(); //현재 날짜와 시간을 가져옴
     //Firestore에 추가한 할일들 저장하기
     const docRef = await addDoc(todoCollection, {
+      userId: data?.user?.id,
       text: input,
       completed: false,
       datetime: currentDate.getTime(), //타임스탬프로 생성 날짜를 저장
@@ -128,7 +137,7 @@ const TodoList = () => {
     <div className={styles.container}>
       <h1 className="text-xl mb-5 font-bold underline underline-offset-4" style={{ textShadow: "2px 2px 5px rgba(0,0,0,0.3)",
        textDecoration: "underline dotted", color: "gray" }}>
-        Todo List
+       {data?.user?.name}'s Todo List
       </h1>
       {/* 할 일을 입력받는 텍스트 필드입니다. */}
       <input
