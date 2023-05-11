@@ -34,9 +34,6 @@ const AdminDashboard = () => {
   const router = useRouter();
    
 
-  const handleLogout = () => {
-    signOut();
-  };
 
 
   const getTodos = async () => {
@@ -126,21 +123,15 @@ const AdminDashboard = () => {
         The admin can see other users' todo-lists but cannot delete or check them. 
       </h2>
       {data && (
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid">
         <button
-          className="w-40 justify-self-end p-1 mb-4 bg-pink-300 text-white border border-pink-300 rounded hover:bg-white hover:text-pink-300"
+          className="w-60 justify-self-center p-1 mb-4 bg-pink-300 text-white border border-pink-300 rounded hover:bg-white hover:text-pink-300"
           onClick={() => router.push("/")}
           style={{ boxShadow: '0 4px 5px rgba(0, 0, 0, 0.3)' }}
         >
           Go to my todo list
         </button> 
-        <button
-        className="w-40 p-1 mb-4 bg-purple-300 text-white border border-purple-300 rounded hover:bg-white hover:text-purple-300"
-        onClick={handleLogout}
-        style={{ boxShadow: '0 4px 5px rgba(0, 0, 0, 0.3)' }}
-      >
-        Logout
-      </button>  
+    
       </div>
       )}
       <ul>
