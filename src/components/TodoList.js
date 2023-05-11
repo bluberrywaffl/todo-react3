@@ -7,7 +7,7 @@ import React, { useState, useEffect } from "react";
 import TodoItem from "@/components/TodoItem";
 import styles from "@/styles/TodoList.module.css";
 import moment from "moment";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 
 //firebase 관련 모듈 불러오기
@@ -49,9 +49,6 @@ const TodoList = () => {
     //Firestore에서 할 일 목록 조회합니다.
     const results = await getDocs(q);
     const newTodos = [];
-
-    
-
     //가져온 할 일 목록을 newTodos 배열에 담음
     results.docs.forEach((doc) => {
       //console.log(doc.data());
@@ -132,6 +129,12 @@ const TodoList = () => {
     }
   };
 
+  const handleLogout = () => {
+    signOut();
+  };
+
+
+
   // 컴포넌트를 렌더링합니다.
   return (
     <div className={styles.container}>
@@ -155,7 +158,7 @@ const TodoList = () => {
         onKeyDown={handleKeyDown}
       />
       {/* 할 일을 추가하는 버튼입니다. */}
-      <div class="grid">
+      <div class="grid grid-cols-2 gap-4">
         <button
           // className={styles.addButton}
           // -- addButton CSS code --
@@ -177,20 +180,28 @@ const TodoList = () => {
           style={{ boxShadow: '0 4px 5px rgba(0, 0, 0, 0.3)' }}
         >
           Add Todo
-        </button>   
+        </button> 
+        <button
+        className="w-40 p-1 mb-4 bg-purple-300 text-white border border-purple-300 rounded hover:bg-white hover:text-purple-300"
+        onClick={handleLogout}
+        style={{ boxShadow: '0 4px 5px rgba(0, 0, 0, 0.3)' }}
+      >
+        Logout
+      </button>  
       </div>
       {/* 할 일 목록을 렌더링합니다. */}
       <ul>
         {todos.map((todo) => (
           <TodoItem
-            key={todo.id}
-            todo={todo}
-            onToggle={() => toggleTodo(todo.id)}
-            onDelete={() => deleteTodo(todo.id)}
+          key={todo.id}
+          todo={todo}
+          onToggle={() => toggleTodo(todo.id)}
+          onDelete={() => deleteTodo(todo.id)}
           />
-        ))}
+          ))}
       </ul>
-    </div>
+         </div>
+
   );
 };
 
