@@ -1,18 +1,16 @@
 import { useRouter } from "next/router";
 import { useSession, signIn, signOut } from "next-auth/react";
-import AdminDashboard from "../admin";
+
 
 export default function Signin() {
    const router = useRouter();
    const { data: session } = useSession();
-
-    // Define an array of admin Kakao names
+//관리자는 앱 운영자와 교수님 두 분입니다.
   const adminNames = ["정원", "김진중"];
 
-  // Check if the logged in user is an admin
+
   const isAdmin = session && adminNames.includes(session.user.name);
 
-//    const isAdmin = session?.user?.role === "admin";
 
    return (
     <div className = "flex justify-center h-screen">
@@ -43,6 +41,7 @@ export default function Signin() {
                 </button>
                 {isAdmin && (
             <button
+            //admin page 로 갈 수 있는 버튼입니다.
               className={`w-40
                 justify-self-center
                 p-1 mb-4

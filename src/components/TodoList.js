@@ -8,6 +8,7 @@ import TodoItem from "@/components/TodoItem";
 import styles from "@/styles/TodoList.module.css";
 import moment from "moment";
 import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/router";
 
 
 //firebase 관련 모듈 불러오기
@@ -33,7 +34,7 @@ const TodoList = () => {
   // 상태를 관리하는 useState 훅을 사용하여 할 일 목록과 입력값을 초기화합니다.
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
-
+  const router = useRouter();
   const { data } = useSession();
 
   const getTodos = async () => {
@@ -78,12 +79,13 @@ const TodoList = () => {
     //Firestore에 추가한 할일들 저장하기
     const docRef = await addDoc(todoCollection, {
       userId: data?.user?.id,
+      userName: data?.user?.name,
       text: input,
       completed: false,
       datetime: currentDate.getTime(), //타임스탬프로 생성 날짜를 저장
     });
     //id 값을 Firestore에 저장한 값으로 지정.
-    setTodos([...todos, { id: docRef.id, text: input, completed: false, datetime: currentDate.getTime() }]);
+    setTodos([...todos, { id: docRef.id, userName: docRef.name, text: input, completed: false, datetime: currentDate.getTime() }]);
     setInput("");
   };
 
@@ -158,7 +160,15 @@ const TodoList = () => {
         onKeyDown={handleKeyDown}
       />
       {/* 할 일을 추가하는 버튼입니다. */}
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-3 gap-2">
+        <button
+        //로그아웃 버튼입니다.
+        className="w-40 justify-self-center p-1 mb-4 bg-purple-300 text-white border border-purple-300 rounded hover:bg-white hover:text-purple-300"
+        onClick={handleLogout}
+        style={{ boxShadow: '0 4px 5px rgba(0, 0, 0, 0.3)' }}
+      >
+        Logout
+      </button>  
         <button
           // className={styles.addButton}
           // -- addButton CSS code --
@@ -175,18 +185,19 @@ const TodoList = () => {
           //   background-color: #fff;
           //   color: #0070f3;
           // }
-          className="w-40 justify-self-end p-1 mb-4 bg-pink-300 text-white border border-pink-300 rounded hover:bg-white hover:text-pink-300"
+          className="w-40 justify-self-center p-1 mb-4 bg-pink-300 text-white border border-pink-300 rounded hover:bg-white hover:text-pink-300"
           onClick={addTodo}
           style={{ boxShadow: '0 4px 5px rgba(0, 0, 0, 0.3)' }}
         >
           Add Todo
         </button> 
-        <button
-        className="w-40 p-1 mb-4 bg-purple-300 text-white border border-purple-300 rounded hover:bg-white hover:text-purple-300"
-        onClick={handleLogout}
+      <button
+      //Todo list 홈에서 admin page로 갈 수 있는 버튼입니다.
+        className="w-40 justify-self-end p-1 mb-4 bg-blue-300 text-white border border-purple-300 rounded hover:bg-white hover:text-purple-300"
+        onClick= {() => router.push("/admin")}
         style={{ boxShadow: '0 4px 5px rgba(0, 0, 0, 0.3)' }}
       >
-        Logout
+        Go to Admin
       </button>  
       </div>
       {/* 할 일 목록을 렌더링합니다. */}
